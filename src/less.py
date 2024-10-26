@@ -3,6 +3,7 @@ import util
 import less_prompts
 import logging
 import os
+import time
 
 client = OpenAI()
 
@@ -19,7 +20,7 @@ def less(
         db_dir_path=DATABASES_FILEPATH
     )
     new_rules = []
-    
+    start_time = time.time()
     for index, row in data.iterrows():
         gold_query = row['gold']
         pred_query = row['pred']
@@ -50,7 +51,7 @@ def less(
         )
         rule_candidate = response.choices[0].message.content
 
-        print(f"RULE CANDIDATE:\n{rule_candidate}")
+        print(f"RULE CANDIDATE {index+1}/{184}:\n{rule_candidate}")
         user_check = input("Type \"y\" to accept, \"n\" to reject the current RULE CANDIDATE\n")
 
         if user_check == 'y':
@@ -73,6 +74,13 @@ def less(
             rule_candidate=rule_candidate,
             user_check=user_check
         )
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print("---------------------------------------------------------------")
+    print(f"COMPLETION STATS:")
+    print(f"Elapsed time: {elapsed_time:.2f} seconds")
+    print(f"Number of rule candidates: {len(new_rules)}")
+    print("---------------------------------------------------------------")
 
 
 def record_sample_log(index, gold_query, pred_query, db_schema, model, system_prompt, user_prompt, response, rule_candidate, user_check):
