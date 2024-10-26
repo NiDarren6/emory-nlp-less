@@ -69,7 +69,6 @@ def less(
 
         print(f"RULE CANDIDATE {index+1}/{184}:\n{rule_candidate}")
         user_check = input("Type \"y\" to accept, \"n\" to reject the current RULE CANDIDATE\n")
-
         if user_check == 'y':
             print("\n---------------- NEW RULE ADDED TO PROMPT ----------------\n")
             new_rules.append(rule_candidate)
@@ -78,6 +77,7 @@ def less(
         else:
             print("Invalid input. Please enter \"y\" or \"n\".")
 
+        cur_time = time.time()
         record_sample_log(
             index=index,
             gold_query=gold_query,
@@ -88,7 +88,8 @@ def less(
             user_prompt=user_prompt,
             response=response,
             rule_candidate=rule_candidate,
-            user_check=user_check
+            user_check=user_check,
+            time=cur_time
         )
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -109,7 +110,8 @@ def record_sample_log(
     user_prompt: str,
     response: str,
     rule_candidate: str,
-    user_check: str
+    user_check: str,
+    time: float
 ) -> None:
     """
     Records sample data to a log file.
@@ -143,6 +145,7 @@ def record_sample_log(
     logging.info(f"response: {response}")
     logging.info(f"rule_candidate: {rule_candidate}")
     logging.info(f"user_check: {user_check}")
+    logging.info(f"time: {time}")
     logging.info(f"-----------------------------------------------------")
 
 if __name__ == "__main__":
