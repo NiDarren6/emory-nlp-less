@@ -1,0 +1,4 @@
+data/bird_dev/*
+src/__pycache__/*
+src/test.ipynb
+prompt.txt
