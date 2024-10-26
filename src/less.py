@@ -93,6 +93,7 @@ def less(
         )
     end_time = time.time()
     elapsed_time = end_time - start_time
+    logging.info(f"Number of rule candidates: {len(new_rules)}")
     print("---------------------------------------------------------------")
     print(f"COMPLETION STATS:")
     print(f"Elapsed time: {elapsed_time:.2f} seconds")
