@@ -49,7 +49,7 @@ def preprocess_annotated_data(
     for i, gold_value in enumerate(data['gold']):
         match = re.match(pattern, gold_value)
         if match:
-            data.iloc[i]['gold'] = match.group(1)
+            data.loc[i, 'gold'] = match.group(1)
             db_name = gold_value[match.end():]
 
             if db_name not in db_schema:

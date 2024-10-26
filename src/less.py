@@ -5,7 +5,10 @@ import os
 import time
 from openai import OpenAI
 
-client = OpenAI()
+
+with open(f'{os.path.dirname(__file__)}/API-KEY', 'r') as key:
+    api_key = key.readline()
+client = OpenAI(api_key=api_key)
 
 DEFAULT_MODEL = "gpt-4o"
 ANNOTATED_BIRD_FALSEPOGNEG_FILEPATH = 'data/annotated_bird_falsepogneg.csv'
@@ -65,7 +68,7 @@ def less(
 
         print(f"RULE CANDIDATE {index+1}/{184}:\n{rule_candidate}")
         user_check = input("Type \"y\" to accept, \"n\" to reject the current RULE CANDIDATE\n")
-       
+        
         while user_check.lower() not in {'y', 'n'}:
             print('Invalid input. Please enter "y" or "n".')
         if user_check == 'y':
