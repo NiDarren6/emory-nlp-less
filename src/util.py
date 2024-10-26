@@ -22,10 +22,6 @@ import sqlite3
 import pandas as pd
 from collections import defaultdict
 
-ANNOTATED_BIRD_FALSEPOGNEG_FILEPATH = 'data/annotated_bird_falsepogneg.csv'
-DATABASES_FILEPATH = 'data/bird_dev/dev_databases'
-
-
 def preprocess_annotated_data(
         annotated_falsepogneg_filepath: str,
         db_dir_path: str
@@ -97,3 +93,5 @@ def get_sqlite_schema(
                 schema += row[0] + ";\n"
 
     return schema
+
+
