@@ -41,10 +41,11 @@ def less(
         gold_query = row['gold']
         pred_query = row['pred']
         db_schema = row['db_schema']
-        
+        new_rules_str = "\n".join(new_rules)
+
         system_prompt = less_prompts.RuleGenerationPrompts.SYSTEM_PROMPT(
             esmp_rules=less_prompts.RuleGenerationPrompts.ESM_P_RULES,
-            new_rules=new_rules
+            new_rules=new_rules_str
         )
         user_prompt = less_prompts.RuleGenerationPrompts.USER_PROMPT(
             gold_query=gold_query, 
