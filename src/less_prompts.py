@@ -41,6 +41,7 @@ Evaluation steps:
 - Put {''.join(NEW_RULE_TAG)} around the new equivalence rule that you think of. Do not use other formatting around the equivalent queries.
 - Use GENERALIZED COLUMN AND TABLE NAMES in any EQUIVALENCE RULE YOU WRITE. DO NOT USE THE SAME NAMES IN THE PROVIDED QUERY PAIRS!!!!
 - If the two queries are not logically equivalent, say {NEW_RULE_TAG[0]} Not equivalent {NEW_RULE_TAG[1]}.
+- If the new equivalence rule is already repeated in the examples listed, say {NEW_RULE_TAG[0]} Rule exists {NEW_RULE_TAG[1]}.
 
 Take a Deep Breath and Carefully Follow the Rules, Guides and Examples I gave you. I will tip you $2000 if you do EVERYTHING Perfectly.'''
     

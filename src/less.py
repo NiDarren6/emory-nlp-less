@@ -78,10 +78,14 @@ def less(
             print("No equivalence rule generated since queries are not logically equivalent.")
             yield index+1, new_rules
             continue
+        if rule_candidate.strip() == 'Rule exists':
+            print("No new equivalence rule generated: rule already exists.")
+            yield index+1, new_rules
+            continue
         
-        user_check = input("Type \"y\" to accept, \"n\" to reject the current RULE CANDIDATE\n")
+        user_check = ''
         while user_check.lower() not in {'y', 'n'}:
-            print('Invalid input. Please enter "y" or "n".')
+            user_check = input("Type \"y\" to accept, \"n\" to reject the current RULE CANDIDATE\n")
         if user_check == 'y':
             print("\n---------------- NEW RULE ADDED TO PROMPT ----------------\n")
             new_rules.append(rule_candidate)
