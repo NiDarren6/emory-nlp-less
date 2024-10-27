@@ -65,10 +65,13 @@ def less(
         rule_candidate = response.choices[0].message.content
         rule_candidate = rule_candidate[rule_candidate.find(less_prompts.NEW_RULE_TAG[0]):rule_candidate.find(less_prompts.NEW_RULE_TAG[-1])]
         rule_candidate = rule_candidate[len(less_prompts.NEW_RULE_TAG[0]+'\n'):]
-
-        print(f"RULE CANDIDATE {index+1}/{184}:\n{rule_candidate}")
-        user_check = input("Type \"y\" to accept, \"n\" to reject the current RULE CANDIDATE\n")
         
+        print(f"RULE CANDIDATE {index+1}/{184}:\n{rule_candidate}")
+        if rule_candidate.strip() == 'Not equivalent':
+            print("No equivalence rule generated since queries are not logically equivalent.")
+            continue
+        
+        user_check = input("Type \"y\" to accept, \"n\" to reject the current RULE CANDIDATE\n")
         while user_check.lower() not in {'y', 'n'}:
             print('Invalid input. Please enter "y" or "n".')
         if user_check == 'y':
