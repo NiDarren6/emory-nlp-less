@@ -1,10 +1,5 @@
-import util
-import less_prompts
-import logging
-import os
-import time
 from openai import OpenAI
-import json
+import util, less_prompts, logging, os, time, json
 
 
 with open(f'{os.path.dirname(__file__)}/API-KEY', 'r') as key:

@@ -16,9 +16,7 @@ containing the SQL CREATE statements for all database objects.
 
 """
 
-import os
-import re
-import sqlite3
+import os, re, sqlite3
 import pandas as pd
 from collections import defaultdict
 
