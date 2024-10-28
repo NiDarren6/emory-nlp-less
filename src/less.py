@@ -60,7 +60,7 @@ def less(
 
         response = client.chat.completions.create(
             model=model,
-            temperature=0,
+            temperature=0.5,
             messages=[{'role': 'user', 'content': prompt}],
             stop=less_prompts.NEW_RULE_TAG[-1]
         )
