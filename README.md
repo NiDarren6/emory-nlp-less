@@ -19,3 +19,10 @@
     - Value of `'rules'` is formatted as a dictionary.
   - After extraction, `rules: list[str]` is a `list` of all the accepted equivalence rules.
 - When you run `less.py` again, past progress will be automatically loaded, if any.
+
+## Running `less.py`:
+- `less.py` contains two arguments:
+  - `-s` or `--shuffle` (boolean): Determines if example rules are SHUFFLED in the prompt
+  - `-k` or `--top_k_rules` (int): Number of existing rules to sample for example rules in the prompt
+    - `-k 0` turns off top k sampling of the rules.
+- Default command: `python less.py -s True -k 0`.
