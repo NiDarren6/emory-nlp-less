@@ -4,7 +4,7 @@ import logging
 import os
 import time
 from openai import OpenAI
-import pickle as pk
+import json
 
 
 with open(f'{os.path.dirname(__file__)}/API-KEY', 'r') as key:
@@ -167,15 +167,18 @@ def main():
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     
-    index, current_rules = 0, []
-    if os.path.exists(f'{log_dir}/progress.pkl'):
-        with open(f'{log_dir}/progress.pkl', 'rb') as progress:
-            index, current_rules = pk.load(file=progress)
+    progress = {'index': 0, 'rules': dict()}
+    if os.path.exists(f'{log_dir}/current-rules.json'):
+        with open(f'{log_dir}/current-rules.json', 'r') as progress:
+            progress = json.load(fp=progress)
+    index, current_rules = progress['index'], ['\n'.join(rule) for rule in progress['rules'].values()]
+    
     print(f'Looking to start at row {index+1} in the dataset...\n')
 
     for index, current_rules in less(start_index=index, current_rules=current_rules, log_dir=log_dir):
-        with open(f'{log_dir}/progress.pkl', 'wb') as progress:
-            pk.dump(obj=(index, current_rules), file=progress)
+        progress['index'] , progress['rules'] = index, {f'{i+1}': rule.split('\n') for i, rule in enumerate(current_rules)}
+        with open(f'{os.path.dirname(os.path.dirname(__file__))}/logs/current-rules.json', 'w') as file:
+            json.dump(obj=progress, fp=file, indent=4)
 
 
 if __name__ == "__main__":

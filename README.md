@@ -6,13 +6,16 @@
 
 ## Loading Rule Generation Progress:
 - You can stop rule generation using `Ctrl + C` during code execution.
-- After each rule is accepted, current set of rules are automatically saved in `logs/progress.pkl`.
-  - To examine: use the following template. 
+- After each rule is accepted, current set of rules are automatically saved in `logs/current-rules.json`.
+  - You can (optionally) load it using the following template. 
     ```
-    import pickle as pk
-    with open(<progress.pkl file path>, 'rb') as file:
-        index, rules = pk.load(file)
+    import json
+    with open(<current-rules.json file path>, 'r') as file:
+        progress = json.load(fp=progress)
+    index, rules = progress['index'], ['\n'.join(rule) for rule in progress['rules'].values()]
     ```
-  - `index: int` marks the number of queries that have already been checked for potential equivalence rules.
-  - `rules: list[str]` are all the accepted equivalence rules stored in a `list`.
+  - `current-rules.json` is stored as a dictionary with two keys: `'index'` and `'rules'`:
+    - Value of `'index'` marks the number of queries that have already been checked for potential equivalence rules.
+    - Value of `'rules'` is formatted as a dictionary.
+  - After extraction, `rules: list[str]` is a `list` of all the accepted equivalence rules.
 - When you run `less.py` again, past progress will be automatically loaded, if any.
