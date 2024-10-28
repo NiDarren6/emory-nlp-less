@@ -1,5 +1,5 @@
 from openai import OpenAI
-import util, less_prompts, logging, os, time, json
+import util, less_prompts, logging, os, time, json, argparse
 
 
 with open(f'{os.path.dirname(__file__)}/API-KEY', 'r') as key:
@@ -12,6 +12,8 @@ DATABASES_FILEPATH = f'{os.path.dirname(os.path.dirname(__file__))}/data/bird_de
 
 
 def less(
+    shuffle: bool,
+    top_k: int,
     start_index: int,
     current_rules: list[str],
     log_dir: str,
@@ -48,7 +50,8 @@ def less(
         prompt = (
             less_prompts.RuleGenerationPrompts.SYSTEM_PROMPT() + '\n\n\n\n' + 
             less_prompts.RuleGenerationPrompts.EXAMPLE_RULES(
-                rules=less_prompts.RuleGenerationPrompts.ESM_P_RULES() + new_rules
+                rules=less_prompts.RuleGenerationPrompts.ESM_P_RULES() + new_rules,
+                shuffle=shuffle, top_k=top_k
             ) + '\n\n\n\n' + 
             less_prompts.RuleGenerationPrompts.GUIDELINES() + '\n\n\n\n' +
             less_prompts.RuleGenerationPrompts.QUERY(
@@ -157,7 +160,9 @@ def record_sample_log(
     logging.info(f"-----------------------------------------------------")
 
 
-def main():
+def main(args):
+    shuffle, top_k = args.shuffle, args.top_k_rules
+    
     log_dir = f'{os.path.dirname(os.path.dirname(__file__))}/logs'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
@@ -170,11 +175,15 @@ def main():
     
     print(f'Looking to start at row {index+1} in the dataset...\n')
 
-    for index, current_rules in less(start_index=index, current_rules=current_rules, log_dir=log_dir):
+    for index, current_rules in less(shuffle=shuffle, top_k=top_k, start_index=index, current_rules=current_rules, log_dir=log_dir):
         progress['index'] , progress['rules'] = index, {f'{i+1}': rule.split('\n') for i, rule in enumerate(current_rules)}
         with open(f'{os.path.dirname(os.path.dirname(__file__))}/logs/current-rules.json', 'w') as file:
             json.dump(obj=progress, fp=file, indent=4)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--shuffle', default=True, type=bool, help='(boolean) determines if example rules are SHUFFLED in the prompt')
+    parser.add_argument('-k', '--top_k_rules', default=0, type=int, help='(int) number of existing rules to sample for example rules in the prompt')
+    args = parser.parse_args()
+    main(args=args)

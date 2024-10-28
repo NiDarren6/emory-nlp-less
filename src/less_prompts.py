@@ -1,3 +1,4 @@
+import random
 from enum import Enum
 
 
@@ -31,7 +32,18 @@ Evaluation steps:
 8. Generate a New Logical Equivalence Rule (If Applicable): Create an "Equivalent Queries: <query1>\n<query2>\nSchema Conditions:<conditions>" statement that defines the equivalence. Use GENERALIZED COLUMN and TABLE NAMES. Specify any necessary conditions based on the database schema. Present the rule clearly, indicating both the equivalence and the conditions under which it holds.'''
     
     
-    EXAMPLE_RULES = lambda rules: 'Example Equivalence Rules:\n\n' + '\n\n'.join([f'<Rule{i+1}>\n{rule}\n</Rule{i+1}>' for i, rule in enumerate(rules)])
+    def EXAMPLE_RULES(
+        rules: list[str], 
+        shuffle: bool=True, 
+        top_k: int=0
+    ):
+        if top_k > len(rules):
+            print(f'WARNING: Cannot sample {top_k} rules out of {len(rules)}. Using all rules.')
+            top_k = len(rules)
+        
+        examples = random.sample(population=rules, k=len(rules)) if shuffle else rules
+        examples = examples[:top_k] if top_k > 0 else examples
+        return 'Example Equivalence Rules:\n\n' + '\n\n'.join([f'<Rule{i+1}>\n{rule}\n</Rule{i+1}>' for i, rule in enumerate(examples)])
     
     
     GUIDELINES = lambda: f'''# Guidelines:
