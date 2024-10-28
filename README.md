@@ -11,7 +11,7 @@
     ```
     import json
     with open(<current-rules.json file path>, 'r') as file:
-        progress = json.load(fp=progress)
+        progress = json.load(fp=file)
     index, rules = progress['index'], ['\n'.join(rule) for rule in progress['rules'].values()]
     ```
   - `current-rules.json` is stored as a dictionary with two keys: `'index'` and `'rules'`:
