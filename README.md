@@ -1,4 +1,4 @@
-# Learning LESS: <u>L</u>ogical <u>E</u>quivalence for <u>S</u>tructured Querie<u>S</u>
+# Learning *LESS*: *L*ogical *E*quivalence for *S*tructured Querie*S*
 
 ## Getting Started:
 - Download BIRD [Dev set](https://bird-bench.oss-cn-beijing.aliyuncs.com/dev.zip) to `data` folder and rename it to `bird_dev`.
