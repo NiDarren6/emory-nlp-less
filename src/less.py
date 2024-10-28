@@ -73,7 +73,7 @@ def less(
         rule_candidate = rule_candidate[rule_candidate.find(less_prompts.NEW_RULE_TAG[0]):rule_candidate.find(less_prompts.NEW_RULE_TAG[-1])]
         rule_candidate = rule_candidate[len(less_prompts.NEW_RULE_TAG[0]+'\n'):]
         
-        print(f"RULE CANDIDATE {index+1}/{184}:\n{rule_candidate}")
+        print(f"RULE CANDIDATE {index+1}/{len(data)}:\n{rule_candidate}")
         if rule_candidate.strip() == 'Not equivalent':
             print("No equivalence rule generated since queries are not logically equivalent.")
             yield index+1, new_rules
@@ -171,7 +171,7 @@ def main():
     if os.path.exists(f'{log_dir}/progress.pkl'):
         with open(f'{log_dir}/progress.pkl', 'rb') as progress:
             index, current_rules = pk.load(file=progress)
-    print(f'Beginning from row {index+1} in the dataset...\n')
+    print(f'Looking to start at row {index+1} in the dataset...\n')
 
     for index, current_rules in less(start_index=index, current_rules=current_rules, log_dir=log_dir):
         with open(f'{log_dir}/progress.pkl', 'wb') as progress:
