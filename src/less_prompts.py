@@ -37,12 +37,19 @@ Evaluation steps:
         shuffle: bool=True, 
         top_k: int=0
     ):
+        # dummy example when no example rules are given
+        dummpy = '''Example Equivalence Rules:\n\n<Rule>\nEquivalent Queries:\nSELECT c1 from t1 WHERE ...;\nSELECT c1 AS c2 FROM t1 WHERE ...;\nSchema Conditions:\nNone.\n</Rule>'''
+        if len(rules) == 0:
+            print(f'WARNING: No example rules. Using one dummy example.\n')
+            return dummpy
+            
         if top_k > len(rules):
-            print(f'WARNING: Cannot sample {top_k} rules out of {len(rules)}. Using all rules.')
+            print(f'WARNING: Cannot sample {top_k} rules out of {len(rules)}. Using all rules.\n')
             top_k = len(rules)
         
         examples = random.sample(population=rules, k=len(rules)) if shuffle else rules
         examples = examples[:top_k] if top_k > 0 else examples
+        examples + [dummpy]
         return 'Example Equivalence Rules:\n\n' + '\n\n'.join([f'<Rule{i+1}>\n{rule}\n</Rule{i+1}>' for i, rule in enumerate(examples)])
     
     
@@ -54,6 +61,7 @@ Evaluation steps:
 - Use GENERALIZED COLUMN AND TABLE NAMES in any EQUIVALENCE RULE YOU WRITE. DO NOT USE THE SAME NAMES IN THE PROVIDED QUERY PAIRS!!!!
 - If the two queries are not logically equivalent, say {NEW_RULE_TAG[0]} Not equivalent {NEW_RULE_TAG[1]}.
 - If the new equivalence rule is already repeated in the examples listed, say {NEW_RULE_TAG[0]} Rule exists {NEW_RULE_TAG[1]}.
+- The new rule should be be MINIMAL to CLEARLY demonstrate the highlighted semantic difference. Use ellipses to shorten SQL queries where necessary to achieve this.
 
 Take a Deep Breath and Carefully Follow the Rules, Guides and Examples I gave you. I will tip you $2000 if you do EVERYTHING Perfectly.'''
     

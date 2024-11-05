@@ -50,7 +50,8 @@ def less(
         prompt = (
             less_prompts.RuleGenerationPrompts.SYSTEM_PROMPT() + '\n\n\n\n' + 
             less_prompts.RuleGenerationPrompts.EXAMPLE_RULES(
-                rules=less_prompts.RuleGenerationPrompts.ESM_P_RULES() + new_rules,
+                rules=new_rules,
+                # rules=less_prompts.RuleGenerationPrompts.ESM_P_RULES() + new_rules,
                 shuffle=shuffle, top_k=top_k
             ) + '\n\n\n\n' + 
             less_prompts.RuleGenerationPrompts.GUIDELINES() + '\n\n\n\n' +
@@ -73,19 +74,20 @@ def less(
         
         print(f"RULE CANDIDATE {index+1}/{len(data)}:\n{rule_candidate}")
         if rule_candidate.strip() == 'Not equivalent':
-            print("No equivalence rule generated since queries are not logically equivalent.")
+            print("No equivalence rule generated since queries are not logically equivalent.\n")
             yield index+1, new_rules
             continue
         if rule_candidate.strip() == 'Rule exists':
-            print("No new equivalence rule generated: rule already exists.")
+            print("No new equivalence rule generated: rule already exists.\n")
             yield index+1, new_rules
             continue
         
         user_check = ''
         while user_check.lower() not in {'y', 'n'}:
             user_check = input("Type \"y\" to accept, \"n\" to reject the current RULE CANDIDATE\n")
+        print()
         if user_check == 'y':
-            print("\n---------------- NEW RULE ADDED TO PROMPT ----------------\n")
+            print("---------------- NEW RULE ADDED TO PROMPT ----------------\n")
             new_rules.append(rule_candidate)
 
         cur_time = time.time()
@@ -161,29 +163,57 @@ def record_sample_log(
 
 
 def main(args):
-    shuffle, top_k = args.shuffle, args.top_k_rules
+    shuffle, top_k, esmp = args.shuffle, args.top_k_rules, args.use_esmp_rules
     
+    # logs directory
     log_dir = f'{os.path.dirname(os.path.dirname(__file__))}/logs'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     
+    # load current progress, if any
     progress = {'index': 0, 'rules': dict()}
     if os.path.exists(f'{log_dir}/current-rules.json'):
         with open(f'{log_dir}/current-rules.json', 'r') as progress:
             progress = json.load(fp=progress)
     index, current_rules = progress['index'], ['\n'.join(rule) for rule in progress['rules'].values()]
-    
-    print(f'Looking to start at row {index+1} in the dataset...\n')
 
+    # run LESS
+    print(f'Looking to start at row {index+1} in the dataset...\n')
     for index, current_rules in less(shuffle=shuffle, top_k=top_k, start_index=index, current_rules=current_rules, log_dir=log_dir):
         progress['index'] , progress['rules'] = index, {f'{i+1}': rule.split('\n') for i, rule in enumerate(current_rules)}
         with open(f'{os.path.dirname(os.path.dirname(__file__))}/logs/current-rules.json', 'w') as file:
             json.dump(obj=progress, fp=file, indent=4)
 
+    # save config of run
+    config = dict()
+    if os.path.exists(f'{log_dir}/config.json'):
+        with open(f'{log_dir}/config.json', 'r') as config:
+            config = json.load(fp=config)
+    run = len(config.keys())+1
+    config[f'Run {run}'] = {
+        'Shuffle example rules': shuffle,
+        'Top k rules to select': False if top_k == 0 else top_k,
+        'Use ESM+ rules in example rules': esmp,
+        'Save rules to JSON file': f'rules-run{run}.json'
+    }
+    with open(f'{log_dir}/config.json', 'w') as file:
+        json.dump(obj=config, fp=file, indent=4)
+    
+    # finalize the output file names
+    os.rename(
+        src=f'{os.path.dirname(os.path.dirname(__file__))}/logs/current-rules.json', 
+        dst=f'{os.path.dirname(os.path.dirname(__file__))}/logs/rules-run{run}.json'
+    )
+    os.rename(
+        src=f'{os.path.dirname(os.path.dirname(__file__))}/logs/less_experiment_log.txt', 
+        dst=f'{os.path.dirname(os.path.dirname(__file__))}/logs/rules-run{run}-log.txt'
+    )
+        
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--shuffle', default=True, type=bool, help='(boolean) determines if example rules are SHUFFLED in the prompt')
+    parser.add_argument('-s', '--shuffle', action='store_true', help='(bool) include -s if example rules should be SHUFFLED in the prompt')
     parser.add_argument('-k', '--top_k_rules', default=0, type=int, help='(int) number of existing rules to sample for example rules in the prompt')
+    parser.add_argument('-e', '--use_esmp_rules', action='store_true', help='(bool) include -e if ESM+ rules should be considered for example rules in the prompt')
     args = parser.parse_args()
     main(args=args)

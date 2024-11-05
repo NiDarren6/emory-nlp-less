@@ -6,15 +6,15 @@
 
 ## Loading Rule Generation Progress:
 - You can stop rule generation using `Ctrl + C` during code execution.
-- After each rule is accepted, current set of rules are automatically saved in `logs/current-rules.json`.
+- After each rule is accepted, current set of rules are automatically saved in `logs/rules-run#.json`.
   - You can (optionally) load it using the following template. 
     ```
     import json
-    with open(<current-rules.json file path>, 'r') as file:
+    with open(<rules-run#.json file path>, 'r') as file:
         progress = json.load(fp=file)
     index, rules = progress['index'], ['\n'.join(rule) for rule in progress['rules'].values()]
     ```
-  - `current-rules.json` is stored as a dictionary with two keys: `'index'` and `'rules'`:
+  - `rules-run#.json` is stored as a dictionary with two keys: `'index'` and `'rules'`:
     - Value of `'index'` marks the number of queries that have already been checked for potential equivalence rules.
     - Value of `'rules'` is formatted as a dictionary.
   - After extraction, `rules: list[str]` is a `list` of all the accepted equivalence rules.
@@ -22,7 +22,8 @@
 
 ## Running `less.py`:
 - `less.py` contains two arguments:
-  - `-s` or `--shuffle` (boolean): Determines if example rules are SHUFFLED in the prompt
+  - `-s` or `--shuffle` (boolean): Include -s if example rules should be SHUFFLED in the prompt
   - `-k` or `--top_k_rules` (int): Number of existing rules to sample for example rules in the prompt
     - `-k 0` turns off top k sampling of the rules.
-- Default command: `python less.py -s True -k 0`.
+  - `-e` or `--use_esmp_rules` (boolean): Include -e if ESM+ rules should be considered for example rules in the prompt
+- Example command: `python less.py -s -k 20`.

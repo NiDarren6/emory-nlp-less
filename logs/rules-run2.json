@@ -1,0 +1,138 @@
+{
+    "index": 182,
+    "rules": {
+        "1": [
+            "Equivalent Queries:",
+            "SELECT CAST(SUM(IIF(condition, 1, 0)) AS FLOAT) / SUM(IIF(condition, 1, 0)) FROM table;",
+            "SELECT CAST(SUM(CASE WHEN condition THEN 1 ELSE 0 END) AS REAL) / SUM(CASE WHEN condition THEN 1 ELSE 0 END) FROM table;",
+            "Schema Conditions:",
+            "None."
+        ],
+        "2": [
+            "Equivalent Queries:",
+            "SELECT SUM(IIF(condition1, expr1, 0)) - SUM(IIF(condition2, expr2, 0)) FROM table;",
+            "SELECT SUM(CASE WHEN condition1 THEN expr1 ELSE 0 END) - SUM(CASE WHEN condition2 THEN expr2 ELSE 0 END) FROM table;",
+            "Schema Conditions:",
+            "None."
+        ],
+        "3": [
+            "Equivalent Queries:",
+            "SELECT COUNT(*) FROM table1 INNER JOIN table2 ON table1.col1 = table2.col2 WHERE condition;",
+            "SELECT COUNT(table1.col1) FROM table2 INNER JOIN table1 ON table2.col2 = table1.col1 WHERE condition;",
+            "Schema Conditions:",
+            "table1.col1 is a non-nullable column that uniquely identifies rows in table1."
+        ],
+        "4": [
+            "Equivalent Queries:",
+            "SELECT T2.col2 FROM table1 AS T1 INNER JOIN table2 AS T2 ON T1.col1 = T2.col1 WHERE T1.col3 = 'value1' AND T1.col4 = 'value2';",
+            "SELECT table2.col2 FROM table2 INNER JOIN table1 ON table2.col1 = table1.col1 WHERE table1.col3 = 'value1' AND table1.col4 = 'value2';",
+            "Schema Conditions:",
+            "table1.col1 is a foreign key referencing table2.col1, and table2.col1 is a primary key."
+        ],
+        "5": [
+            "Equivalent Queries:",
+            "SELECT CAST(SUM(IIF(condition, 1, 0)) AS FLOAT) * 100 / COUNT(column) FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1 WHERE table1.date_col = 'date_value';",
+            "SELECT CAST(SUM(CASE WHEN condition THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(column) FROM table2 INNER JOIN table1 ON table2.col1 = table1.col1 WHERE table1.date_col = 'date_value';",
+            "Schema Conditions:",
+            "table1.col1 is a foreign key referencing table2.col1, and table2.col1 is a primary key."
+        ],
+        "6": [
+            "Equivalent Queries:",
+            "SELECT COUNT(table1.col1) FROM table1 INNER JOIN table2 ON table1.col1 = table2.col2 INNER JOIN table3 ON table2.col3 = table3.col4 WHERE table1.condition1 = 'value' AND table3.condition2 = 'value';",
+            "SELECT COUNT(table3.col4) FROM table3 INNER JOIN table2 ON table3.col4 = table2.col3 INNER JOIN table1 ON table2.col2 = table1.col1 WHERE table1.condition1 = 'value' AND table3.condition2 = 'value';",
+            "Schema Conditions:",
+            "table1.col1 is a primary key, table3.col4 is a primary key, and table2.col2 and table2.col3 are foreign keys referencing table1.col1 and table3.col4 respectively."
+        ],
+        "7": [
+            "Equivalent Queries:",
+            "SELECT ... FROM table WHERE condition1 AND condition2;",
+            "SELECT ... FROM table WHERE condition2 AND condition1;",
+            "Schema Conditions:",
+            "None."
+        ],
+        "8": [
+            "Equivalent Queries:",
+            "SELECT T1.col1, T2.col2 FROM table1 AS T1 INNER JOIN table2 AS T2 ON T1.col3 = T2.col3 WHERE T1.col3 = value;",
+            "SELECT table1.col1, table2.col2 FROM table1 INNER JOIN table2 ON table1.col3 = table2.col3 WHERE table1.col3 = value;",
+            "Schema Conditions:",
+            "table1.col3 is a primary key, and table2.col3 is a foreign key referencing table1.col3."
+        ],
+        "9": [
+            "Equivalent Queries:",
+            "SELECT CAST(SUM(column1) AS REAL) / COUNT(column2) FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1 WHERE condition;",
+            "SELECT AVG(column1) FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1 WHERE condition;",
+            "Schema Conditions:",
+            "None."
+        ],
+        "10": [
+            "Equivalent Queries:",
+            "SELECT column_name FROM table_name WHERE SUBSTR(date_column, 1, 7) = 'YYYY-MM';",
+            "SELECT column_name FROM table_name WHERE date_column LIKE 'YYYY-MM%';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "11": [
+            "Equivalent Queries:",
+            "SELECT ... FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1 WHERE table1.col2 = 'value' AND strftime('%Y', table2.date_col) = 'YYYY';",
+            "SELECT ... FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1 WHERE table1.col2 = 'value' AND table2.date_col LIKE 'YYYY%';",
+            "Schema Conditions:",
+            "table2.date_col is consistently formatted as 'YYYY-MM-DD'."
+        ],
+        "12": [
+            "Equivalent Queries:",
+            "SELECT (SUM(CASE WHEN condition1 THEN expr1 ELSE 0 END) * 1.0 - SUM(CASE WHEN condition2 THEN expr2 ELSE 0 END)) * 100 / SUM(CASE WHEN condition2 THEN expr2 ELSE 0 END) FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1;",
+            "SELECT CAST((SUM(CASE WHEN condition1 THEN expr1 ELSE 0 END) - SUM(CASE WHEN condition2 THEN expr2 ELSE 0 END)) AS REAL) * 100 / SUM(CASE WHEN condition2 THEN expr2 ELSE 0 END) FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1;",
+            "Schema Conditions:",
+            "None."
+        ],
+        "13": [
+            "Equivalent Queries:",
+            "SELECT COUNT(primary_key_col) FROM table WHERE condition1 AND column = (SELECT MAX(column) FROM table);",
+            "SELECT COUNT(foreign_key_col) FROM table WHERE condition1 AND column = (SELECT MAX(column) FROM table);",
+            "Schema Conditions:",
+            "foreign_key_col is a non-nullable foreign key."
+        ],
+        "14": [
+            "Equivalent Queries:",
+            "SELECT CAST(COUNT(CASE WHEN t1.col1 = 'value' THEN t2.col2 END) AS REAL) * 100 / COUNT(t2.col2) FROM table1 AS t1 INNER JOIN table2 AS t2 ON t2.col2 = t1.col2 WHERE t2.col3 = 'value';",
+            "SELECT CAST(SUM(CASE WHEN table1.col1 = 'value' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(table2.col2) FROM table2 INNER JOIN table1 ON table2.col2 = table1.col2 WHERE table2.col3 = 'value';",
+            "Schema Conditions:",
+            "table2.col2 is a foreign key referencing table1.col2, and table1.col2 is a primary key."
+        ],
+        "15": [
+            "Equivalent Queries:",
+            "SELECT ... FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1 WHERE table2.col2 = 'value' AND table1.col3 * 100 > (SELECT AVG(col3) FROM table1) * 79;",
+            "SELECT ... FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1 WHERE table2.col2 = 'value' AND table1.col3 > (SELECT AVG(col3) * 0.79 FROM table1);",
+            "Schema Conditions:",
+            "None."
+        ],
+        "16": [
+            "Equivalent Queries:",
+            "SELECT column FROM table1 WHERE foreign_key_column IN (SELECT primary_key_column FROM table2 WHERE condition) ORDER BY order_column DESC LIMIT 1;",
+            "SELECT table1.column FROM table2 INNER JOIN table1 ON table2.primary_key_column = table1.foreign_key_column WHERE condition ORDER BY table1.order_column DESC LIMIT 1;",
+            "Schema Conditions:",
+            "foreign_key_column in table1 is a foreign key referencing primary_key_column in table2, and primary_key_column is a primary key."
+        ],
+        "17": [
+            "Equivalent Queries:",
+            "SELECT DISTINCT column FROM table1 WHERE column2 = 'value' ORDER BY column LIMIT n;",
+            "SELECT DISTINCT table1.column FROM table1 INNER JOIN table2 ON table1.column2 = table2.column2 WHERE table2.column2 = 'value' ORDER BY table1.column LIMIT n;",
+            "Schema Conditions:",
+            "column2 in table1 is a foreign key referencing table2.column2, and table2.column2 is a primary key."
+        ],
+        "18": [
+            "Equivalent Queries:",
+            "SELECT DISTINCT column FROM table1 WHERE column2 = 'value';",
+            "SELECT DISTINCT table1.column FROM table1 INNER JOIN table2 ON table1.column2 = table2.column2 WHERE table2.column2 = 'value';",
+            "Schema Conditions:",
+            "column2 in table1 is a foreign key referencing table2.column2, and table2.column2 is a primary key."
+        ],
+        "19": [
+            "Equivalent Queries:",
+            "SELECT T1.col1 FROM (SELECT T2.col1, COUNT(T3.col2) FROM table1 AS T2 INNER JOIN table2 AS T3 ON T2.col1 = T3.col1 WHERE T2.col3 = 'value' GROUP BY T2.col1 HAVING COUNT(T3.col2) > n) AS T1;",
+            "SELECT table1.col1 FROM table1 INNER JOIN table2 ON table1.col1 = table2.col1 WHERE table1.col3 = 'value' GROUP BY table1.col1 HAVING COUNT(table2.col2) > n;",
+            "Schema Conditions:",
+            "table2.col1 is a foreign key referencing table1.col1, and table1.col1 is a primary key."
+        ]
+    }
+}
