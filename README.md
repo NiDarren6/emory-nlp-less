@@ -26,4 +26,5 @@
   - `-k` or `--top_k_rules` (int): Number of existing rules to sample for example rules in the prompt
     - `-k 0` turns off top k sampling of the rules.
   - `-e` or `--use_esmp_rules` (boolean): Include -e if ESM+ rules should be considered for example rules in the prompt
+  - `-o` or `--override_auto_cot` (boolean): Include -o to prevent LESS from using auto-CoT
 - Example command: `python less.py -s -k 20`.
