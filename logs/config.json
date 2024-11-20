@@ -3,12 +3,21 @@
         "Shuffle example rules": false,
         "Top k rules to select": false,
         "Use ESM+ rules in example rules": true,
+        "Override LESS auto-CoT": false,
         "Save rules to JSON file": "rules-run1.json"
     },
     "Run 2": {
         "Shuffle example rules": true,
         "Top k rules to select": 20,
         "Use ESM+ rules in example rules": false,
+        "Override LESS auto-CoT": false,
         "Save rules to JSON file": "rules-run2.json"
+    },
+    "Run 3": {
+        "Shuffle example rules": true,
+        "Top k rules to select": 1,
+        "Use ESM+ rules in example rules": false,
+        "Override LESS auto-CoT": true,
+        "Save rules to JSON file": "rules-run3.json"
     }
 }

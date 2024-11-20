@@ -38,7 +38,7 @@ Evaluation steps:
         top_k: int=0
     ):
         # dummy example when no example rules are given
-        dummpy = '''Example Equivalence Rules:\n\n<Rule>\nEquivalent Queries:\nSELECT c1 from t1 WHERE ...;\nSELECT c1 AS c2 FROM t1 WHERE ...;\nSchema Conditions:\nNone.\n</Rule>'''
+        dummpy = '''Example Equivalence Rules:\n\n<Rule>\nEquivalent Queries:\nSELECT c1 from t1 WHERE ...;\nSELECT c1 FROM t1 WHERE ...;\nSchema Conditions:\nNone.\n</Rule>'''
         if len(rules) == 0:
             print(f'WARNING: No example rules. Using one dummy example.\n')
             return dummpy
@@ -49,7 +49,6 @@ Evaluation steps:
         
         examples = random.sample(population=rules, k=len(rules)) if shuffle else rules
         examples = examples[:top_k] if top_k > 0 else examples
-        examples + [dummpy]
         return 'Example Equivalence Rules:\n\n' + '\n\n'.join([f'<Rule{i+1}>\n{rule}\n</Rule{i+1}>' for i, rule in enumerate(examples)])
     
     

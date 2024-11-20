@@ -1,0 +1,131 @@
+{
+    "index": 182,
+    "rules": {
+        "1": [
+            "Equivalent Queries:",
+            "SELECT CAST(SUM(IIF(col1 = 'value1', 1, 0)) AS FLOAT) / SUM(IIF(col1 = 'value2', 1, 0)) FROM table1;",
+            "SELECT CAST(SUM(CASE WHEN col1 = 'value1' THEN 1 ELSE 0 END) AS REAL) / SUM(CASE WHEN col1 = 'value2' THEN 1 ELSE 0 END) FROM table1;",
+            "Schema Conditions:",
+            "None."
+        ],
+        "2": [
+            "Equivalent Queries:",
+            "SELECT COUNT(*) FROM t1 INNER JOIN t2 ON t1.c1 = t2.c1 WHERE t2.c2 = 'value' AND t1.c3 > 1000.00;",
+            "SELECT COUNT(t1.c1) FROM t2 INNER JOIN t1 ON t2.c1 = t1.c1 WHERE t2.c2 = 'value' AND t1.c3 > 1000;",
+            "Schema Conditions:",
+            "t1.c1 is a foreign key referencing t2.c1; t1.c3 is a numeric column."
+        ],
+        "3": [
+            "Equivalent Queries:",
+            "SELECT DISTINCT c1 FROM t1 INNER JOIN t2 ON t1.c2 = t2.c3 INNER JOIN t3 ON t1.c4 = t3.c5 WHERE t2.c6 = 'value';",
+            "SELECT DISTINCT c1 FROM t2 INNER JOIN t1 ON t2.c3 = t1.c2 INNER JOIN t3 ON t1.c4 = t3.c5 WHERE t2.c6 = 'value';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "4": [
+            "Equivalent Queries:",
+            "SELECT t2.c2 FROM t1 AS t2 INNER JOIN t2 AS t1 ON t1.c1 = t2.c1 WHERE t1.c3 = 'value' AND t1.c4 = 'value';",
+            "SELECT t2.c2 FROM t2 INNER JOIN t1 ON t2.c1 = t1.c1 WHERE t1.c3 = 'value' AND t1.c4 = 'value';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "5": [
+            "Equivalent Queries:",
+            "SELECT COUNT(t1.c1) FROM t1 INNER JOIN t2 ON t1.c2 = t2.c2 WHERE t1.c3 = 'value' AND t1.c4 BETWEEN 'start' AND 'end' AND t2.c5 = 'value';",
+            "SELECT COUNT(t1.c1) FROM t1 INNER JOIN t2 ON t1.c2 = t2.c2 WHERE t2.c5 = 'value' AND t1.c3 = 'value' AND t1.c4 BETWEEN 'start' AND 'end';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "6": [
+            "Equivalent Queries:",
+            "SELECT COUNT(t1.c1) FROM t1 INNER JOIN t2 ON t1.c1 = t2.c2 INNER JOIN t3 ON t2.c3 = t3.c4 WHERE t1.c5 = '...' AND t3.c6 = '...';",
+            "SELECT COUNT(t3.c4) FROM t3 INNER JOIN t2 ON t3.c4 = t2.c3 INNER JOIN t1 ON t2.c2 = t1.c1 WHERE t1.c5 = '...' AND t3.c6 = '...';",
+            "Schema Conditions:",
+            "t1.c1 is a primary key in t1 and t3.c4 is a primary key in t3."
+        ],
+        "7": [
+            "Equivalent Queries:",
+            "SELECT ... FROM ... WHERE c1 = ... AND c2 = ...;",
+            "SELECT ... FROM ... WHERE c2 = ... AND c1 = ...;",
+            "Schema Conditions:",
+            "None."
+        ],
+        "8": [
+            "Equivalent Queries:",
+            "SELECT T2.c1 FROM t1 AS T1 INNER JOIN t2 AS T2 ON T1.c2 = T2.c3 WHERE T1.c4 = 'value1' AND T1.c5 = 'value2';",
+            "SELECT t2.c1 FROM t1 INNER JOIN t2 ON t1.c2 = t2.c3 WHERE t1.c4 = 'value1' AND t1.c5 = 'value2';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "9": [
+            "Equivalent Queries:",
+            "SELECT COUNT(c1) FROM t1 INNER JOIN t2 ON t1.c2 = t2.c3 WHERE t1.c4 = 'value';",
+            "SELECT count(t2.c1) FROM t1 INNER JOIN t2 ON t1.c2 = t2.c3 WHERE t1.c4 = 'value';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "10": [
+            "Equivalent Queries:",
+            "SELECT t1.c1 FROM t1 INNER JOIN t2 ON t1.id = t2.fk INNER JOIN t3 ON t2.id = t3.fk ORDER BY t3.c2 LIMIT 1;",
+            "SELECT t1.c1 FROM t3 INNER JOIN t2 ON t3.fk = t2.id INNER JOIN t1 ON t2.fk = t1.id ORDER BY t3.c2 ASC LIMIT 1;",
+            "Schema Conditions:",
+            "None."
+        ],
+        "11": [
+            "Equivalent Queries:",
+            "SELECT CAST(SUM(c2) AS REAL) / COUNT(c3) FROM t1 INNER JOIN t2 ON t1.c1 = t2.c1 WHERE t1.c4 = 'value';",
+            "SELECT AVG(t2.c2) FROM t1 INNER JOIN t2 ON t1.c1 = t2.c1 WHERE t1.c4 = 'value';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "12": [
+            "Equivalent Queries:",
+            "SELECT c1 FROM t1 WHERE SUBSTR(c2, 1, 7) = '1970-10';",
+            "SELECT c1 FROM t1 WHERE c2 LIKE '1970-10%';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "13": [
+            "Equivalent Queries:",
+            "SELECT t1.c1 FROM table1 AS t1 INNER JOIN table2 AS t2 ON t2.c2 = t1.c2 ORDER BY t2.c3 DESC LIMIT 1;",
+            "SELECT c1 FROM table1 WHERE c2 = (SELECT c2 FROM table2 ORDER BY c3 DESC LIMIT 1);",
+            "Schema Conditions:",
+            "- table2.c2 is a foreign key referencing table1.c2."
+        ],
+        "14": [
+            "Equivalent Queries:",
+            "SELECT CAST(COUNT(CASE WHEN t1.c1 = 'value' THEN t2.c2 END) AS REAL) * 100 / COUNT(t2.c2) FROM t1 INNER JOIN t2 ON t2.c3 = t1.c3 WHERE t2.c4 = 'value';",
+            "SELECT CAST(SUM(CASE WHEN t1.c1 = 'value' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(t2.c2) FROM t2 INNER JOIN t1 ON t2.c3 = t1.c3 WHERE t2.c4 = 'value';",
+            "Schema Conditions:",
+            "None."
+        ],
+        "15": [
+            "Equivalent Queries:",
+            "SELECT c1 FROM t1 WHERE c2 = 'value' ORDER BY JULIANDAY(c3) ASC LIMIT n;",
+            "SELECT c1 FROM t1 WHERE c2 = 'value' ORDER BY c3 ASC LIMIT n;",
+            "Schema Conditions:",
+            "c3 is a DATE column with valid date entries."
+        ],
+        "16": [
+            "Equivalent Queries:",
+            "SELECT ( SELECT c1 FROM t1 WHERE c2 LIKE 'value1' ) - ( SELECT c1 FROM t1 WHERE c2 LIKE 'value2' ) AS c3;",
+            "SELECT c1 - ( SELECT c1 FROM t1 WHERE c2 = 'value2' ) FROM t1 WHERE c2 = 'value1';",
+            "Schema Conditions:",
+            "The table t1 must have unique entries for each value in column c2, and the LIKE pattern matches the exact string."
+        ],
+        "17": [
+            "Equivalent Queries:",
+            "SELECT COUNT(c1) FROM t1 INNER JOIN t2 ON t1.c2 = t2.c3 WHERE ...;",
+            "SELECT count(*) FROM t1 INNER JOIN t2 ON t1.c2 = t2.c3 WHERE ...;",
+            "Schema Conditions:",
+            "c1 is a non-null primary key in t1."
+        ],
+        "18": [
+            "Equivalent Queries:",
+            "SELECT DISTINCT c1 FROM t1 WHERE c2 = 'value' ORDER BY c1 LIMIT n;",
+            "SELECT DISTINCT t1.c1 FROM t1 INNER JOIN t2 ON t1.c2 = t2.c2 WHERE t2.c2 = 'value' ORDER BY t1.c1 LIMIT n;",
+            "Schema Conditions:",
+            "t1.c2 is a foreign key referencing t2.c2."
+        ]
+    }
+}
